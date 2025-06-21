@@ -38,4 +38,4 @@ def import_users_from_json(filename: str = "users.json") -> None:
                         except ValueError:
                             pass
 
-            users.append(User(**user))
+                users.append(User(**user))
