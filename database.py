@@ -1,7 +1,16 @@
 from datetime import datetime, timezone
 from uuid import uuid4
+from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Column, Integer, String, UUID, DateTime
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import  Column, Integer, String, UUID, DateTime
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///sql_app.db"
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+
+Session = sessionmaker(autoflush=False, bind=engine)
 
 class Base(DeclarativeBase): pass
 
