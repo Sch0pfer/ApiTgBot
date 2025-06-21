@@ -1,9 +1,10 @@
 from uuid import UUID
 from fastapi import FastAPI, HTTPException
 from User import User
-app = FastAPI()
-users: list[User] = []
+from users_list import users, export_users_to_json, import_users_from_json
 
+app = FastAPI()
+import_users_from_json()
 @app.get("/")
 async def root():
     return {"message": "Hello World!"}
@@ -26,4 +27,5 @@ async def read_user(user_id: UUID):
 @app.post("/users/")
 async def create_user(user: User):
     users.append(user)
+    export_users_to_json()
     return {"message": f"User {user.name} created successfully!"}
