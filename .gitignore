@@ -1,3 +1,5 @@
 venv/
 __pycache__/
 .idea/
+requirements.txt
+sql_app.db
