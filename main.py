@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from User import User
 app = FastAPI()
-WhiteGuy = User(name="Mathew",surname="Balls",age=18,email="<EMAIL>",phone_number="+5555555555")
-users: list[User] = [WhiteGuy]
+users: list[User] = []
 
 @app.get("/users")
 async def read_users():
@@ -19,8 +18,5 @@ async def read_user(user_id: int):
 
 @app.post("/users/")
 async def create_user(user: User):
-    if not any(existing_user.name == user.name for existing_user in users):
-        users.append(user)
-        return {"message": f"User {user.name} created successfully!"}
-    else:
-        return {"error": "User already exists!"}
+    users.append(user)
+    return {"message": f"User {user.name} created successfully!"}
