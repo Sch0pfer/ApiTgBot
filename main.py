@@ -34,3 +34,22 @@ async def create_user(user: User, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return {"message": f"User {user.name} created successfully!"}
+
+@app.delete("/users/{user_id}")
+async def delete_user(user_id: UUID, db: Session = Depends(get_db)):
+    user = db.get(UserModel, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"message": f"User {user.name} deleted successfully!"}
+
+@app.delete("/users/")
+async def delete_users(db: Session = Depends(get_db)):
+    db_users = db.query(UserModel).all()
+    if not db_users:
+        raise HTTPException(status_code=404, detail="User not found")
+    for db_user in db_users:
+        db.delete(db_user)
+    db.commit()
+    return {"message": "Users deleted successfully!"}
