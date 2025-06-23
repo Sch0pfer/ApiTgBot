@@ -28,14 +28,6 @@ Session = sessionmaker(autoflush=False, bind=engine)
 
 class Base(DeclarativeBase): pass
 
-class Message(Base):
-    __tablename__ = "messages"
-
-    id: UUID = Column(UUID, primary_key=True, default=uuid4, index=True)
-    user_id: UUID = Column(UUID, default=uuid4, index=True)
-    text: str = Column(String)
-    timestamp: datetime = Column(DateTime, default=datetime.now(timezone.utc))
-
 class UserModel(Base):
     __tablename__ = "users"
 
