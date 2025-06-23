@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
+from pydantic_extra_types.phone_numbers import PhoneNumber
 from uuid import UUID, uuid4
 
 class User(BaseModel):
@@ -6,5 +7,5 @@ class User(BaseModel):
     name: str
     surname: str
     age: int
-    email: str
-    phone_number: str
+    email: EmailStr
+    phone_number: PhoneNumber
