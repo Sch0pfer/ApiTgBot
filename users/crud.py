@@ -1,48 +1,43 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, delete
+
+from core.models import User
 from fastapi import HTTPException
-
 from users.schemas import CreateUser
-
-from core.models.database import *
-
 from uuid import UUID
 
-Base.metadata.create_all(bind=engine)
 
-
-def read_users(db: Session):
-    users = db.query(UserModel).all()
+async def read_users(db: AsyncSession):
+    result = await db.execute(select(User))
+    users = result.scalars().all()
     return {"users": users}
 
 
-def read_user(user_id: UUID, db: Session):
-    current_user = db.get(UserModel, user_id)
+async def read_user(user_id: UUID, db: AsyncSession):
+    current_user = await db.get(User, user_id)
     if not current_user:
         raise HTTPException(status_code=404, detail="User not found")
     return {"user": current_user}
 
 
-def create_user(user: CreateUser, db: Session):
-    db_user = UserModel(**user.model_dump())
+async def create_user(user: CreateUser, db: AsyncSession):
+    db_user = User(**user.model_dump())
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
     return {"message": f"User {user.name} created successfully!"}
 
 
-def delete_user(user_id: UUID, db: Session):
-    user = db.get(UserModel, user_id)
+async def delete_user(user_id: UUID, db: AsyncSession):
+    user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    db.delete(user)
-    db.commit()
+    await db.delete(user)
+    await db.commit()
     return {"message": f"User {user.name} deleted successfully!"}
 
 
-def delete_users(db: Session):
-    db_users = db.query(UserModel).all()
-    if not db_users:
-        raise HTTPException(status_code=404, detail="User not found")
-    for db_user in db_users:
-        db.delete(db_user)
-    db.commit()
+async def delete_users(db: AsyncSession):
+    await db.execute(delete(User))
+    await db.commit()
     return {"message": "Users deleted successfully!"}

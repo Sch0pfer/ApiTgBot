@@ -9,4 +9,4 @@ class CreateUser(BaseModel):
     surname: str
     age: int
     email: EmailStr
-    phone_number: PhoneNumber
+    phone: PhoneNumber
