@@ -2,7 +2,7 @@ from fastapi import HTTPException
 
 from users.schemas import CreateUser
 
-from database import *
+from core.database import *
 
 from uuid import UUID
 
