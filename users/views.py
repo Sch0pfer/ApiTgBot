@@ -1,4 +1,4 @@
-from users.schemas import User
+from users.schemas import CreateUser
 
 from fastapi import Depends, APIRouter
 
@@ -22,7 +22,7 @@ async def read_user(user_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post("/")
-async def create_user(user: User, db: Session = Depends(get_db)):
+async def create_user(user: CreateUser, db: Session = Depends(get_db)):
     return crud.create_user(user, db)
 
 

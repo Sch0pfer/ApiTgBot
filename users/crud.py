@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from users.schemas import User
+from users.schemas import CreateUser
 
 from database import *
 
@@ -21,7 +21,7 @@ def read_user(user_id: UUID, db: Session):
     return {"user": current_user}
 
 
-def create_user(user: User, db: Session):
+def create_user(user: CreateUser, db: Session):
     db_user = UserModel(**user.model_dump())
     db.add(db_user)
     db.commit()
