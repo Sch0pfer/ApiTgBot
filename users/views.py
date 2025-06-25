@@ -2,7 +2,7 @@ from users.schemas import CreateUser
 
 from fastapi import Depends, APIRouter
 
-from core.database import *
+from core.models.database import *
 
 from uuid import UUID
 
