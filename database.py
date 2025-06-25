@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 from uuid import uuid4
 
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -7,9 +5,10 @@ from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import  Column, Integer, String, UUID, DateTime
+from sqlalchemy import Column, Integer, String, UUID
 
 from pydantic import EmailStr
+
 
 def get_db():
     db = Session()
@@ -26,7 +25,10 @@ engine = create_engine(
 
 Session = sessionmaker(autoflush=False, bind=engine)
 
-class Base(DeclarativeBase): pass
+
+class Base(DeclarativeBase):
+    pass
+
 
 class UserModel(Base):
     __tablename__ = "users"
