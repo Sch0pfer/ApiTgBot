@@ -10,3 +10,15 @@ class CreateUser(BaseModel):
     age: int
     email: EmailStr
     phone: PhoneNumber
+
+
+class UpdateUser(CreateUser):
+    pass
+
+
+class UpdateUserPartial(BaseModel):
+    name: str | None
+    surname: str | None
+    age: int | None
+    email: EmailStr | None
+    phone: PhoneNumber | None
