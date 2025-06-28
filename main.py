@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from core.models import Base, db_helper
-from users.views import router as user_router
+from api_v1.users import user_router
 
 
 @asynccontextmanager

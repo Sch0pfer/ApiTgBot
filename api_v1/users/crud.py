@@ -3,7 +3,7 @@ from sqlalchemy import select, delete
 
 from core.models import User
 from fastapi import HTTPException
-from users.schemas import CreateUser
+from api_v1.users.schemas import CreateUser
 from uuid import UUID
 
 

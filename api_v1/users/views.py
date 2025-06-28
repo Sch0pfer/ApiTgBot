@@ -1,7 +1,7 @@
-from users.schemas import CreateUser
+from api_v1.users import CreateUser
 from fastapi import Depends, APIRouter
 from uuid import UUID
-from users import crud
+from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
 from dependencies import get_async_session
 
