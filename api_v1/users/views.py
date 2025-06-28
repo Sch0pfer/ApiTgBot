@@ -9,31 +9,31 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("")
-async def read_users(db: AsyncSession = Depends(db_helper.get_async_session)):
+async def read_users(db: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     return await crud.read_users(db)
 
 
 @router.get("/{user_id}")
 async def read_user(
-    user_id: UUID, db: AsyncSession = Depends(db_helper.get_async_session)
+    user_id: UUID, db: AsyncSession = Depends(db_helper.scoped_session_dependency)
 ):
     return await crud.read_user(user_id, db)
 
 
 @router.post("/")
 async def create_user(
-    user: CreateUser, db: AsyncSession = Depends(db_helper.get_async_session)
+    user: CreateUser, db: AsyncSession = Depends(db_helper.scoped_session_dependency)
 ):
     return await crud.create_user(user, db)
 
 
 @router.delete("/{user_id}")
 async def delete_user(
-    user_id: UUID, db: AsyncSession = Depends(db_helper.get_async_session)
+    user_id: UUID, db: AsyncSession = Depends(db_helper.scoped_session_dependency)
 ):
     return await crud.delete_user(user_id, db)
 
 
 @router.delete("/")
-async def delete_users(db: AsyncSession = Depends(db_helper.get_async_session)):
+async def delete_users(db: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     return await crud.delete_users(db)

@@ -34,10 +34,12 @@ async def delete_user(user_id: UUID, db: AsyncSession):
         raise HTTPException(status_code=404, detail="User not found")
     await db.delete(user)
     await db.commit()
+    await db.refresh(user)
     return {"message": f"User {user.name} deleted successfully!"}
 
 
 async def delete_users(db: AsyncSession):
     await db.execute(delete(User))
     await db.commit()
+    await db.refresh(User)
     return {"message": "Users deleted successfully!"}
