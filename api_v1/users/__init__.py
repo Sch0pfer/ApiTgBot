@@ -1,9 +1,9 @@
 __all__ = (
     "CreateUser",
     "user_router",
-    "UpdateUser",
-    "UpdateUserPartial",
+    "UserUpdate",
+    "UserUpdatePartial",
 )
 
-from .schemas import CreateUser, UpdateUser, UpdateUserPartial
+from .schemas import CreateUser, UserUpdate, UserUpdatePartial
 from .views import router as user_router

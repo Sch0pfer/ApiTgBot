@@ -1,4 +1,4 @@
-from api_v1.users import CreateUser, UpdateUser
+from api_v1.users import CreateUser, UserUpdate
 from fastapi import Depends, APIRouter
 from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,11 +32,11 @@ async def read_users(db: AsyncSession = Depends(db_helper.get_async_session)):
 
 @router.put("/{user_id}")
 async def update_user(
-    user_update: UpdateUser,
+    user_update: UserUpdate,
     user: User = Depends(user_by_id),
     db: AsyncSession = Depends(db_helper.get_async_session),
 ):
-    return crud.update_user(
+    return await crud.update_user(
         user_update=user_update,
         user=user,
         db=db,

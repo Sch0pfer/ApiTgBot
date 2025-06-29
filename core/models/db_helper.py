@@ -22,7 +22,7 @@ class DatabaseHelper:
             try:
                 yield session
             finally:
-                session.close()
+                await session.close()
 
 db_helper = DatabaseHelper(
     url=settings.get_db_url(),

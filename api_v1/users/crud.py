@@ -4,7 +4,7 @@ from uuid import UUID
 
 from core.models import User
 from fastapi import HTTPException
-from api_v1.users import CreateUser, UpdateUser, UpdateUserPartial
+from api_v1.users import CreateUser, UserUpdate, UserUpdatePartial
 
 
 async def create_user(user: CreateUser, db: AsyncSession):
@@ -26,14 +26,15 @@ async def read_users(db: AsyncSession):
 
 
 async def update_user(
-    user: User,
     db: AsyncSession,
-    user_update: UpdateUser | UpdateUserPartial,
+    user: User,
+    user_update: UserUpdate | UserUpdatePartial,
     partial: bool = False,
 ) -> User:
     for name, value in user_update.model_dump(exclude_unset=partial).items():
         setattr(user, name, value)
     await db.commit()
+    await db.refresh(user)
     return user
 
 
