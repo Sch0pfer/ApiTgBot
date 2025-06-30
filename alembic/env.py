@@ -10,8 +10,9 @@ from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+# Добавляем корень проекта в PYTHONPATH
+sys.path.append(os.getcwd())
 config = context.config
-sys.path.append(os.getcwd())  # Добавляем корень проекта в PYTHONPATH
 config.set_main_option('sqlalchemy.url', settings.get_db_url())
 
 # Interpret the config file for Python logging.
@@ -23,8 +24,8 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 from core.models import Base
-target_metadata = Base.metadata
 from core.models.user import User
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -50,6 +51,8 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,  # Включаем сравнение типов
+        compare_server_default=True,  # Включаем сравнение значений по умолчанию
     )
 
     with context.begin_transaction():
@@ -57,7 +60,12 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        compare_type=True,  # Включаем сравнение типов
+        compare_server_default=True,  # Включаем сравнение значений по умолчанию
+    )
 
     with context.begin_transaction():
         context.run_migrations()
@@ -69,6 +77,7 @@ async def run_async_migrations() -> None:
 
     """
 
+    # Используем настройки из alembic.ini
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -82,17 +91,9 @@ async def run_async_migrations() -> None:
 
 
 def run_migrations_online() -> None:
-    connectable = create_async_engine(
-        context.config.get_main_option("sqlalchemy.url")
-    )
+    asyncio.run(run_async_migrations())
 
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-            compare_type=True,
-            compare_server_default=True
-        )
-
-        with context.begin_transaction():
-            context.run_migrations()
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
