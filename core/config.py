@@ -15,11 +15,7 @@ class Settings(BaseSettings):
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
     )
 
-    def get_db_url(self):
-        return (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@"
-            f"{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        )
+    db_url = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 
 settings = Settings()
