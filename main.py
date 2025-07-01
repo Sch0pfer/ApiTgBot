@@ -7,11 +7,7 @@ from api_v1.users import user_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    try:
-        yield
-    finally:
-        await db_helper.engine.close_connection()
-
+    yield
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(user_router)
