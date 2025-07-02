@@ -26,8 +26,8 @@ async def read_user(
 
 
 @router.get("")
-async def read_users(db: AsyncSession = Depends(db_helper.get_async_session)):
-    return await crud.read_users(db)
+async def read_users(db: AsyncSession = Depends(db_helper.get_async_session), skip: int | None = None, limit: int | None = None):
+    return await crud.read_users(db, skip, limit)
 
 
 @router.put("/{user_id}")

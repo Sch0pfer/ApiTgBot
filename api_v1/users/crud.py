@@ -19,9 +19,19 @@ async def read_user(user_id: UUID, db: AsyncSession):
     return await db.get(User, user_id)
 
 
-async def read_users(db: AsyncSession):
-    result = await db.execute(select(User))
+async def read_users(db: AsyncSession, skip: int | None, limit: int | None):
+    query = select(User).order_by(User.id)
+    if skip is not None and limit is not None:
+        query = query.offset(skip).limit(limit)
+    elif skip is not None:
+        query = query.offset(skip)
+    elif limit is not None:
+        query = query.limit(limit)
+
+    result = await db.execute(query)
+
     users = result.scalars().all()
+
     return {"users": users}
 
 
