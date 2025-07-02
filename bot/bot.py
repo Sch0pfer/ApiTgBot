@@ -9,7 +9,9 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-TOKEN = getenv("TOKEN")
+from core.config import settings
+
+TOKEN = settings.TOKEN
 
 dp = Dispatcher(bot=Bot(TOKEN))
 
