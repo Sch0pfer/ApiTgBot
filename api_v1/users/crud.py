@@ -67,7 +67,7 @@ async def read_users(
         else:
             query = query.order_by(sort_field.asc())
     else:
-        query = query.order_by(sort_field.asc())
+        query = query.order_by(User.id.asc())
 
     if skip is not None:
         query = query.offset(skip)
