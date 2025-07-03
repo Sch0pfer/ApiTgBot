@@ -1,3 +1,5 @@
+from pydantic import EmailStr
+from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from uuid import UUID
@@ -19,17 +21,52 @@ async def read_user(user_id: UUID, db: AsyncSession):
     return await db.get(User, user_id)
 
 
-async def read_users(db: AsyncSession, skip: int | None, limit: int | None):
+async def read_users(
+    db: AsyncSession,
+    name: str | None,
+    surname: str | None,
+    age: int | None,
+    email: EmailStr | None,
+    phone: PhoneNumber | None,
+    min_id: int | None,
+    max_id: int | None,
+    skip: int | None,
+    limit: int | None,
+):
+    filters = []
+
     query = select(User).order_by(User.id)
-    if skip is not None and limit is not None:
-        query = query.offset(skip).limit(limit)
-    elif skip is not None:
+
+    if name is not None:
+        filters.append(User.name.ilike(f"%{name}%"))
+
+    if surname is not None:
+        filters.append(User.surname.ilike(f"%{surname}%"))
+
+    if age is not None:
+        filters.append(User.age == age)
+
+    if email is not None:
+        filters.append(User.email == email)
+
+    if phone is not None:
+        filters.append(User.phone == phone)
+
+    if min_id is not None:
+        filters.append(User.id >= min_id)
+
+    if max_id is not None:
+        filters.append(User.id <= max_id)
+
+    if filters:
+        query = query.filter(*filters)
+
+    if skip is not None:
         query = query.offset(skip)
-    elif limit is not None:
+    if limit is not None:
         query = query.limit(limit)
 
     result = await db.execute(query)
-
     users = result.scalars().all()
 
     return {"users": users}

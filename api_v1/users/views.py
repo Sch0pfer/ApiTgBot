@@ -1,3 +1,6 @@
+from pydantic import EmailStr
+from pydantic_extra_types.phone_numbers import PhoneNumber
+
 from api_v1.users import CreateUser, UserUpdate
 from fastapi import Depends, APIRouter
 from api_v1.users import crud
@@ -26,8 +29,30 @@ async def read_user(
 
 
 @router.get("")
-async def read_users(db: AsyncSession = Depends(db_helper.get_async_session), skip: int | None = None, limit: int | None = None):
-    return await crud.read_users(db, skip, limit)
+async def read_users(
+    db: AsyncSession = Depends(db_helper.get_async_session),
+    name: str | None = None,
+    surname: str | None = None,
+    age: int | None = None,
+    email: EmailStr | None = None,
+    phone: PhoneNumber | None = None,
+    min_id: int | None = None,
+    max_id: int | None = None,
+    skip: int | None = None,
+    limit: int | None = None,
+):
+    return await crud.read_users(
+        db,
+        name,
+        surname,
+        age,
+        email,
+        phone,
+        min_id,
+        max_id,
+        skip,
+        limit,
+    )
 
 
 @router.put("/{user_id}")
