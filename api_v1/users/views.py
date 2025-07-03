@@ -42,8 +42,10 @@ async def read_users(
     max_id: Optional[int] = None,
     skip: Optional[int] = None,
     limit: Optional[int] = None,
-    sort: Optional[str] = Query(None, description="User sort order"),
-    order: Optional[str] = Query(None, description="Sorting direction"),
+    sort: Optional[str] = Query(
+        None, description="Sort field (id, name, surname, age, email, phone"
+    ),
+    order: Optional[str] = Query("asc", description="Sort direction (asc or desc)"),
 ):
     return await crud.read_users(
         db,
