@@ -49,15 +49,17 @@ async def read_users(
 ):
     return await crud.read_users(
         db,
-        name,
-        surname,
-        age,
-        email,
-        phone,
-        min_id,
-        max_id,
-        skip,
-        limit,
+        name=name,
+        surname=surname,
+        age=age,
+        email=email,
+        phone=phone,
+        min_id=min_id,
+        max_id=max_id,
+        skip=skip,
+        limit=limit,
+        sort=sort,
+        order=order,
     )
 
 
