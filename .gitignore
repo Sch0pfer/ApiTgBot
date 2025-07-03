@@ -4,3 +4,4 @@ __pycache__/
 requirements.txt
 sql_app.db
 core/.env
+app.log
