@@ -1,8 +1,10 @@
+from typing import Optional
+
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
 from api_v1.users import CreateUser, UserUpdate
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, Query
 from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
@@ -31,15 +33,15 @@ async def read_user(
 @router.get("")
 async def read_users(
     db: AsyncSession = Depends(db_helper.get_async_session),
-    name: str | None = None,
-    surname: str | None = None,
-    age: int | None = None,
-    email: EmailStr | None = None,
-    phone: PhoneNumber | None = None,
-    min_id: int | None = None,
-    max_id: int | None = None,
-    skip: int | None = None,
-    limit: int | None = None,
+    name: Optional[str] = None,
+    surname: Optional[str] = None,
+    age: Optional[int] = None,
+    email: Optional[EmailStr] = None,
+    phone: Optional[PhoneNumber] = None,
+    min_id: Optional[int] = None,
+    max_id: Optional[int] = None,
+    skip: Optional[int] = None,
+    limit: Optional[int] = None,
 ):
     return await crud.read_users(
         db,
