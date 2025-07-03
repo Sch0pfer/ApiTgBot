@@ -25,43 +25,49 @@ async def read_user(user_id: UUID, db: AsyncSession):
 
 async def read_users(
     db: AsyncSession,
-    name: Optional[str],
-    surname: Optional[str],
-    age: Optional[int],
-    email: Optional[EmailStr],
-    phone: Optional[PhoneNumber],
-    min_id: Optional[int],
-    max_id: Optional[int],
-    skip: Optional[int],
-    limit: Optional[int],
+    name: Optional[str] = None,
+    surname: Optional[str] = None,
+    age: Optional[int] = None,
+    email: Optional[EmailStr] = None,
+    phone: Optional[PhoneNumber] = None,
+    min_id: Optional[int] = None,
+    max_id: Optional[int] = None,
+    skip: Optional[int] = None,
+    limit: Optional[int] = None,
+    sort: Optional[str] = None,
+    order: Optional[str] = "asc",
 ):
+    allowed_sort_fields = ["id", "name", "surname", "age", "email", "phone"]
+    order_direction = order.strip().lower() if order else "asc"
+
     filters = []
-
-    query = select(User).order_by(User.id)
-
     if name is not None:
         filters.append(User.name.ilike(f"%{name}%"))
-
     if surname is not None:
         filters.append(User.surname.ilike(f"%{surname}%"))
-
     if age is not None:
         filters.append(User.age == age)
-
     if email is not None:
         filters.append(User.email == email)
-
     if phone is not None:
         filters.append(User.phone == phone)
-
     if min_id is not None:
         filters.append(User.id >= min_id)
-
     if max_id is not None:
         filters.append(User.id <= max_id)
 
+    query = select(User)
     if filters:
         query = query.filter(*filters)
+
+    if sort and sort in allowed_sort_fields:
+        sort_field = getattr(User, sort)
+        if order_direction == "desc":
+            query = query.order_by(sort_field.desc())
+        else:
+            query = query.order_by(sort_field.asc())
+    else:
+        query = query.order_by(sort_field.asc())
 
     if skip is not None:
         query = query.offset(skip)
@@ -70,7 +76,6 @@ async def read_users(
 
     result = await db.execute(query)
     users = result.scalars().all()
-
     return {"users": users}
 
 
