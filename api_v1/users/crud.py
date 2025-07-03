@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,15 +25,15 @@ async def read_user(user_id: UUID, db: AsyncSession):
 
 async def read_users(
     db: AsyncSession,
-    name: str | None,
-    surname: str | None,
-    age: int | None,
-    email: EmailStr | None,
-    phone: PhoneNumber | None,
-    min_id: int | None,
-    max_id: int | None,
-    skip: int | None,
-    limit: int | None,
+    name: Optional[str],
+    surname: Optional[str],
+    age: Optional[int],
+    email: Optional[EmailStr],
+    phone: Optional[PhoneNumber],
+    min_id: Optional[int],
+    max_id: Optional[int],
+    skip: Optional[int],
+    limit: Optional[int],
 ):
     filters = []
 
