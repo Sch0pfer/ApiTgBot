@@ -4,11 +4,13 @@ from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
+
 from uuid import UUID
 
 from core.models import User
-from fastapi import HTTPException
 from api_v1.users import CreateUser, UserUpdate, UserUpdatePartial
+
+from fastapi import HTTPException
 
 
 async def create_user(user: CreateUser, db: AsyncSession):
