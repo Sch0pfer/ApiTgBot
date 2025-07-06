@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from main import app
 from core.models import Base, DatabaseHelper
 
-TEST_DATABASE_URL = "postgresql+asyncpg://pencil:1234@localhost:5234/mydb"
+TEST_DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5234/test_db"
 
 
 @pytest.fixture(scope="session")
