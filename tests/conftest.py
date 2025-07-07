@@ -21,3 +21,17 @@ async def async_client():
 
     yield engine
     await engine.dispose()
+
+
+@pytest.fixture
+async def db_session(engine) -> AsyncSession:
+    async with async_sessionmaker(
+        bind=engine,
+        expire_on_commit=False,
+    ) as session:
+        yield session
+
+
+# @pytest.fixture(autouse=True)
+# def override_db_helper(db_session, monkeypatch):
+#
