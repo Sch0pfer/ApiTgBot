@@ -32,6 +32,21 @@ async def db_session(engine) -> AsyncSession:
         yield session
 
 
-# @pytest.fixture(autouse=True)
-# def override_db_helper(db_session, monkeypatch):
-#
+@pytest.fixture(autouse=True)
+def override_db_helper(db_session, monkeypatch):
+    class TestDBHelper:
+        async def get_async_session(self):
+            yield db_session
+
+    monkeypatch.setattr(core.models, "db_helper", TestDBHelper())
+
+
+@pytest.fixture
+async def app() -> FastAPI:
+    return main_app
+
+
+@pytest.fixture
+async def client(app) -> AsyncClient:
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
