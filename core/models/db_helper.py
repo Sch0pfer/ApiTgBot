@@ -14,14 +14,15 @@ class DatabaseHelper:
             expire_on_commit=False,
         )
 
-    async def get_async_session(self):
+    async def get_db(self):
         async with self.session_factory() as session:
             try:
                 yield session
             finally:
                 await session.close()
 
+
 db_helper = DatabaseHelper(
-    url=settings.db_url,
+    url=settings.get_db_url,
     echo=settings.DB_ECHO,
 )

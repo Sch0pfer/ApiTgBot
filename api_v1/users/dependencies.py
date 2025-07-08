@@ -9,7 +9,7 @@ from . import crud
 
 async def user_by_id(
     user_id: Annotated[UUID, Path],
-    db: AsyncSession = Depends(db_helper.get_async_session),
+    db: AsyncSession = Depends(db_helper.get_db),
 ) -> User:
     user = await crud.read_user(user_id, db)
     if user:

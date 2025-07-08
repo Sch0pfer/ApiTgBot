@@ -13,7 +13,7 @@ from alembic import context
 # Добавляем корень проекта в PYTHONPATH
 sys.path.append(os.getcwd())
 config = context.config
-config.set_main_option('sqlalchemy.url', settings.db_url)
+config.set_main_option("sqlalchemy.url", settings.get_db_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -25,6 +25,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 from core.models import Base
 from core.models.user import User
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -92,6 +93,7 @@ async def run_async_migrations() -> None:
 
 def run_migrations_online() -> None:
     asyncio.run(run_async_migrations())
+
 
 if context.is_offline_mode():
     run_migrations_offline()

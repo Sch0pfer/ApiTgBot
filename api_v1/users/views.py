@@ -16,23 +16,21 @@ router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 
 
 @router.post("/")
-async def create_user(
-    user: CreateUser, db: AsyncSession = Depends(db_helper.get_async_session)
-):
+async def create_user(user: CreateUser, db: AsyncSession = Depends(db_helper.get_db)):
     return await crud.create_user(user, db)
 
 
 @router.get("/{user_id}")
 async def read_user(
     user_id: UUID,
-    db: AsyncSession = Depends(db_helper.get_async_session),
+    db: AsyncSession = Depends(db_helper.get_db),
 ):
     return await crud.read_user(user_id, db)
 
 
 @router.get("")
 async def read_users(
-    db: AsyncSession = Depends(db_helper.get_async_session),
+    db: AsyncSession = Depends(db_helper.get_db),
     name: Optional[str] = None,
     surname: Optional[str] = None,
     age: Optional[int] = None,
@@ -67,7 +65,7 @@ async def read_users(
 async def update_user(
     user_update: UserUpdate,
     user: User = Depends(user_by_id),
-    db: AsyncSession = Depends(db_helper.get_async_session),
+    db: AsyncSession = Depends(db_helper.get_db),
 ):
     return await crud.update_user(
         user_update=user_update,
@@ -79,11 +77,11 @@ async def update_user(
 @router.delete("/{user_id}")
 async def delete_user(
     user: User = Depends(user_by_id),
-    db: AsyncSession = Depends(db_helper.get_async_session),
+    db: AsyncSession = Depends(db_helper.get_db),
 ):
     return await crud.delete_user(user, db)
 
 
 @router.delete("/")
-async def delete_users(db: AsyncSession = Depends(db_helper.get_async_session)):
+async def delete_users(db: AsyncSession = Depends(db_helper.get_db)):
     return await crud.delete_users(db)
