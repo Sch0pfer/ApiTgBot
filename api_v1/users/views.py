@@ -15,7 +15,7 @@ from core.models import db_helper, User
 router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def create_user(user: CreateUser, db: AsyncSession = Depends(db_helper.get_db)):
     return await crud.create_user(user, db)
 
@@ -74,7 +74,7 @@ async def update_user(
     )
 
 
-@router.delete("/{user_id}")
+@router.delete("/{user_id}", status_code=204)
 async def delete_user(
     user: User = Depends(user_by_id),
     db: AsyncSession = Depends(db_helper.get_db),
@@ -82,6 +82,6 @@ async def delete_user(
     return await crud.delete_user(user, db)
 
 
-@router.delete("/")
+@router.delete("/", status_code=204)
 async def delete_users(db: AsyncSession = Depends(db_helper.get_db)):
     return await crud.delete_users(db)

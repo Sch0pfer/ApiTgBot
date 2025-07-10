@@ -18,13 +18,20 @@ logger = logging.getLogger(__name__)
 
 
 async def create_user(user: CreateUser, db: AsyncSession):
+    existing_user = await db.execute(select(User).where(User.email == user.email))
+    if existing_user.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User with this email already exists",
+        )
+
     try:
         db_user = User(**user.model_dump())
         db.add(db_user)
         await db.commit()
         await db.refresh(db_user)
         logger.info(f"User created: {user.email}")
-        return {"message": f"User {user.name} created successfully!"}
+        return db_user
 
     except IntegrityError as e:
         await db.rollback()
@@ -123,7 +130,7 @@ async def read_users(
 
         result = await db.execute(query)
         users = result.scalars().all()
-        return {"users": users}
+        return users
     except SQLAlchemyError as e:
         await db.rollback()
         logger.error(f"Database error: {e}")
@@ -165,7 +172,6 @@ async def delete_user(user: User, db: AsyncSession):
         await db.delete(db_user)
         await db.commit()
         logger.info(f"User deleted: {user.id}")
-        return {"message": f"User {user.name} deleted successfully!"}
 
     except SQLAlchemyError as e:
         await db.rollback()
