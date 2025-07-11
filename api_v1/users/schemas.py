@@ -4,8 +4,8 @@ from uuid import UUID, uuid4
 
 
 class UserBase(BaseModel):
-    name: str
-    surname: str
+    username: str
+    hashed_password: str
     age: int
     email: EmailStr
     phone: PhoneNumber
@@ -20,8 +20,12 @@ class UserUpdate(UserBase):
 
 
 class UserUpdatePartial(UserBase):
-    name: str | None = None
-    surname: str | None = None
+    username: str | None = None
     age: int | None = None
     email: EmailStr | None = None
     phone: PhoneNumber | None = None
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
