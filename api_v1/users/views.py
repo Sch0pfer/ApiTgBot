@@ -12,7 +12,7 @@ from uuid import UUID
 from api_v1.users.dependencies import user_by_id
 from core.models import db_helper, User
 
-router = APIRouter(prefix="/api/v1/users", tags=["Users"])
+router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
 
 @router.post("/", status_code=201)
@@ -31,8 +31,7 @@ async def read_user(
 @router.get("")
 async def read_users(
     db: AsyncSession = Depends(db_helper.get_db),
-    name: Optional[str] = None,
-    surname: Optional[str] = None,
+    username: Optional[str] = None,
     age: Optional[int] = None,
     email: Optional[EmailStr] = None,
     phone: Optional[PhoneNumber] = None,
@@ -41,14 +40,13 @@ async def read_users(
     skip: Optional[int] = None,
     limit: Optional[int] = None,
     sort: Optional[str] = Query(
-        None, description="Sort field (id, name, surname, age, email, phone"
+        None, description="Sort field (id, username, age, email, phone"
     ),
     order: Optional[str] = Query("asc", description="Sort direction (asc or desc)"),
 ):
     return await crud.read_users(
         db,
-        name=name,
-        surname=surname,
+        username=username,
         age=age,
         email=email,
         phone=phone,

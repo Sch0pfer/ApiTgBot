@@ -78,8 +78,7 @@ async def read_user(user_id: UUID, db: AsyncSession):
 
 async def read_users(
     db: AsyncSession,
-    name: Optional[str] = None,
-    surname: Optional[str] = None,
+    username: Optional[str] = None,
     age: Optional[int] = None,
     email: Optional[EmailStr] = None,
     phone: Optional[PhoneNumber] = None,
@@ -91,14 +90,12 @@ async def read_users(
     order: Optional[str] = "asc",
 ):
     try:
-        allowed_sort_fields = ["id", "name", "surname", "age", "email", "phone"]
+        allowed_sort_fields = ["id", "username", "age", "email", "phone"]
         order_direction = order.strip().lower() if order else "asc"
 
         filters = []
-        if name is not None:
-            filters.append(User.name.ilike(f"%{name}%"))
-        if surname is not None:
-            filters.append(User.surname.ilike(f"%{surname}%"))
+        if username is not None:
+            filters.append(User.username.ilike(f"%{username}%"))
         if age is not None:
             filters.append(User.age == age)
         if email is not None:
