@@ -29,3 +29,12 @@ class UserUpdatePartial(UserBase):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+
+class UserRegister(BaseModel):
+    id: UUID = Field(default_factory=uuid4, description="UUID of the user")
+    username: str
+    password: str
+    age: int
+    email: EmailStr
+    phone: PhoneNumber
