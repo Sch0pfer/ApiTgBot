@@ -8,10 +8,11 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: str
     DB_NAME: str
+    TOKEN: str
+    SECRET_KEY: str
+    JWT_ACCESS_COOKIE_NAME: str
 
     DB_ECHO: bool = False
-
-    TOKEN: str
 
     TEST_DB_URL: str = "postgresql+asyncpg://user:password@localhost:5433/testdb"
 
