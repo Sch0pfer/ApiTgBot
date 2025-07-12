@@ -12,7 +12,7 @@ from uuid import UUID
 from api_v1.users.dependencies import user_by_id
 from core.models import db_helper, User
 
-router = APIRouter(prefix="/api/v1/users", tags=["users"])
+router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 
 
 @router.post("/", status_code=201)

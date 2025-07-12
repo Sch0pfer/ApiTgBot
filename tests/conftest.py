@@ -36,8 +36,8 @@ async def cleanup_db(async_client):
 def user_data() -> CreateUser:
     return CreateUser(
         id=uuid.uuid4(),
-        name="John",
-        surname="Smith",
+        username="John Smith",
+        hashed_password="string",
         age=18,
         email="john.smith@example.com",
         phone="tel:+7-777-777-7777",
@@ -47,10 +47,10 @@ def user_data() -> CreateUser:
 @pytest_asyncio.fixture
 def update_user() -> User:
     return User(
-        name="Pencil",
-        surname="Baby",
+        username="Pencil Baby",
+        hashed_password="string",
         age=100,
-        email="john.smith@example.com",
+        email="notjohn.notsmith@example.com",
         phone="tel:+7-777-777-7777",
     )
 
@@ -59,15 +59,14 @@ def update_user() -> User:
 def multiple_users_data() -> list[CreateUser]:
     users = []
 
-    names = ["John", "Emma", "Alex", "Sophia", "James"]
-    surnames = ["Smith", "Johnson", "Brown", "Williams", "Taylor"]
+    usernames = ["John", "Emma", "Alex", "Sophia", "James"]
     ages = [18, 25, 32, 28, 45]
 
     for i in range(5):
         user = CreateUser(
             id=uuid.uuid4(),
-            name=names[i],
-            surname=surnames[i],
+            username=usernames[i],
+            hashed_password="string",
             age=ages[i],
             email=f"user{i + 1}@example.com",
             phone=f"tel:+7-777-777-77{70 + i}",

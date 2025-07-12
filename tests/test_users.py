@@ -8,8 +8,7 @@ logger = logging.getLogger(__name__)
 async def test_create_user(async_client, create_user_via_api, user_data):
     data_from_response = await create_user_via_api(user_data)
     assert data_from_response["id"] == str(user_data.id)
-    assert data_from_response["name"] == user_data.name
-    assert data_from_response["surname"] == user_data.surname
+    assert data_from_response["username"] == user_data.username
     assert data_from_response["age"] == user_data.age
     assert data_from_response["email"] == user_data.email
     assert data_from_response["phone"] == user_data.phone
