@@ -33,9 +33,7 @@ async def get_current_user_id(
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     try:
-        user_data = jwt.decode(
-            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
-        )
+        user_data = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         return UUID(user_data["sub"])
     except jwt.PyJWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token") from e
