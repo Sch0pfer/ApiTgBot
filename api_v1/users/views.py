@@ -1,5 +1,4 @@
 from typing import Optional
-
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
@@ -9,7 +8,7 @@ from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
-from api_v1.users.dependencies import user_by_id
+from api_v1.users.dependencies import get_current_user, user_by_id
 from core.models import db_helper, User
 
 router = APIRouter(prefix="/api/v1/users", tags=["Users"])
@@ -20,7 +19,14 @@ async def create_user(user: CreateUser, db: AsyncSession = Depends(db_helper.get
     return await crud.create_user(user, db)
 
 
-@router.get("/{user_id}")
+@router.get("/me", status_code=200)
+async def read_current_user(
+    user: User = Depends(get_current_user),
+):
+    return user
+
+
+@router.get("/{user_id}", status_code=200)
 async def read_user(
     user_id: UUID,
     db: AsyncSession = Depends(db_helper.get_db),

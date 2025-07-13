@@ -45,6 +45,7 @@ async def login(
             secure=False,
             samesite="lax",
             path="/",
+            max_age=3600,
         )
         return response
 
