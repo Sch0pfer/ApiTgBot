@@ -2,8 +2,7 @@ import jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 from uuid import UUID
-from fastapi import Path, Depends, status, HTTPException, Request, Depends
-from authx import AuthX
+from fastapi import Path, status, HTTPException, Request, Depends
 
 from core.models import db_helper, User
 from core.config import settings
