@@ -9,6 +9,15 @@ class UserBase(BaseModel):
     age: int
     email: EmailStr
     phone: PhoneNumber
+    role: str = "user"
+
+    @property
+    def is_user(self) -> bool:
+        return self.role == "user"
+
+    @property
+    def is_admin(self) -> bool:
+        return self.role == "admin"
 
 
 class CreateUser(UserBase):
