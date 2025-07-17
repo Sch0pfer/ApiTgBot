@@ -79,8 +79,3 @@ async def register_user(
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
-
-
-@router.get("/protected", dependencies=[Depends(security.access_token_required)])
-def protected():
-    return {"data": "TOP_SECRET"}
