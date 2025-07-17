@@ -3,7 +3,7 @@ from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
 from api_v1.users import CreateUser, UserUpdate
-from fastapi import Depends, APIRouter, Query
+from fastapi import Depends, APIRouter, Query, HTTPException, status
 from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
@@ -14,19 +14,22 @@ from core.models import db_helper, User
 router = APIRouter(prefix="/api/v1/users", tags=["Users"])
 
 
-@router.post("/", status_code=201)
+@router.post(
+    path="/",
+    status_code=201,
+)
 async def create_user(user: CreateUser, db: AsyncSession = Depends(db_helper.get_db)):
     return await crud.create_user(user, db)
 
 
-@router.get("/me", status_code=200)
+@router.get(path="/me", status_code=200)
 async def read_current_user(
     user: User = Depends(get_current_user),
 ):
     return user
 
 
-@router.get("/{user_id}", status_code=200)
+@router.get(path="/{user_id}", status_code=200)
 async def read_user(
     user_id: UUID,
     db: AsyncSession = Depends(db_helper.get_db),
@@ -34,7 +37,10 @@ async def read_user(
     return await crud.read_user(user_id, db)
 
 
-@router.get("")
+@router.get(
+    path="",
+    status_code=200,
+)
 async def read_users(
     db: AsyncSession = Depends(db_helper.get_db),
     username: Optional[str] = None,
@@ -65,27 +71,56 @@ async def read_users(
     )
 
 
-@router.put("/{user_id}")
+@router.put(
+    path="/{user_id}",
+    status_code=204,
+)
 async def update_user(
     user_update: UserUpdate,
-    user: User = Depends(user_by_id),
+    target_user: User = Depends(user_by_id),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(db_helper.get_db),
 ):
+    if current_user.id != target_user.id and current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to update this user",
+        )
     return await crud.update_user(
         user_update=user_update,
-        user=user,
+        user=target_user,
         db=db,
     )
 
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete(
+    path="/{user_id}",
+    status_code=204,
+)
 async def delete_user(
-    user: User = Depends(user_by_id),
+    target_user: User = Depends(user_by_id),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(db_helper.get_db),
 ):
-    return await crud.delete_user(user, db)
+    if current_user.id != target_user.id and current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to delete this user",
+        )
+    return await crud.delete_user(target_user, db)
 
 
-@router.delete("/", status_code=204)
-async def delete_users(db: AsyncSession = Depends(db_helper.get_db)):
+@router.delete(
+    path="/",
+    status_code=204,
+)
+async def delete_users(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(db_helper.get_db),
+):
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can delete all users",
+        )
     return await crud.delete_users(db)

@@ -1,18 +1,14 @@
 import logging
 from typing import Optional
-
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import select, delete
-
 from uuid import UUID
-
 from core.models import User
 from api_v1.users import CreateUser, UserUpdate, UserUpdatePartial
-
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 logger = logging.getLogger(__name__)
 
@@ -142,13 +138,12 @@ async def update_user(
     user: User,
     user_update: UserUpdate | UserUpdatePartial,
     partial: bool = False,
-) -> User:
+):
     try:
         for name, value in user_update.model_dump(exclude_unset=partial).items():
             setattr(user, name, value)
         await db.commit()
         await db.refresh(user)
-        return user
     except IntegrityError as e:
         await db.rollback()
         logger.error(f"Integrity error: {e}")
