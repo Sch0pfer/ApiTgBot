@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
+from typing import Callable
 
 from authx.exceptions import MissingTokenError
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from starlette.responses import JSONResponse
 
 from api_v1.users import user_router
@@ -17,6 +18,14 @@ async def lifespan(app: FastAPI):
 setup_logging()
 
 app = FastAPI(lifespan=lifespan)
+
+app.middleware("http")(lifespan)
+
+
+async def middleware(request: Request, call_next: Callable) -> Response:
+    response = await call_next(request)
+    return response
+
 
 app.include_router(user_router)
 app.include_router(auth_router)
