@@ -1,13 +1,11 @@
 from typing import Optional
 from pydantic import EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
-
 from api_v1.users import CreateUser, UserUpdate
 from fastapi import Depends, APIRouter, Query, HTTPException, status
 from api_v1.users import crud
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
-
 from api_v1.users.dependencies import get_current_user, user_by_id
 from core.models import db_helper, User
 
