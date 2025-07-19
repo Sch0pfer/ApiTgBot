@@ -47,3 +47,4 @@ class UserRegister(BaseModel):
     age: int
     email: EmailStr
     phone: PhoneNumber
+    role: str = "user"

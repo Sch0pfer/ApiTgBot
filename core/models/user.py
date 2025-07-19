@@ -11,4 +11,4 @@ class User(Base):
     email: Mapped[str] = mapped_column(nullable=False)
     phone: Mapped[str] = mapped_column(nullable=True)
 
-    role: Mapped[str] = mapped_column(nullable=False, default="user")
+    role: Mapped[str] = mapped_column(nullable=False)

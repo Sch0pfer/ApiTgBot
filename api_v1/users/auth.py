@@ -1,9 +1,10 @@
 from fastapi import HTTPException, APIRouter, Response
 from fastapi.params import Depends
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from authx import AuthX, AuthXConfig
 from api_v1.users import UserLogin
+from api_v1.users.dependencies import get_current_user
 from api_v1.users.schemas import UserRegister, CreateUser
 from core.models import User, db_helper
 from passlib.context import CryptContext
@@ -60,13 +61,17 @@ async def register_user(
     user_data: UserRegister,
     db: AsyncSession = Depends(db_helper.get_db),
 ):
-    user = await db.execute(select(User).where(User.username == user_data.username))
-    user = user.scalar_one_or_none()
-    if user:
+    user_count = await db.scalar(select(func.count(User.id)))
+    if user_count > 0:
         raise HTTPException(
-            status_code=409,
-            detail="User already exists",
+            status_code=403,
+            detail="Initial admin already exists",
         )
+    existing_user = await db.scalar(
+        select(User).where(User.username == user_data.username)
+    )
+    if existing_user:
+        raise HTTPException(status_code=409, detail="User already exists")
 
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     user_dict = user_data.model_dump()
@@ -74,8 +79,8 @@ async def register_user(
     user_dict["hashed_password"] = pwd_context.hash(password)
 
     user = CreateUser(**user_dict)
-
     db_user = User(**user.model_dump())
+
     db.add(db_user)
     await db.commit()
-    await db.refresh(db_user)
+    return {"message": "User created", "id": db_user.id}

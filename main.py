@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request, Response
 from starlette.responses import JSONResponse
 from api_v1.users import user_router
 from api_v1.users import auth_router
+from core.logging_config import setup_logging
 
 
 @asynccontextmanager
@@ -13,6 +14,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
+setup_logging()
 logger = logging.getLogger(__name__)
 
 app = FastAPI(lifespan=lifespan)
