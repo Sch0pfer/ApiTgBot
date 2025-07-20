@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from typing import Callable
 from authx.exceptions import MissingTokenError
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from api_v1.users import user_router
 from api_v1.users import auth_router
@@ -18,6 +19,11 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
 
 
 @app.middleware("http")
@@ -56,6 +62,13 @@ async def middleware(request: Request, call_next: Callable) -> Response:
     return response
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(user_router)
 app.include_router(auth_router)
 
